@@ -10,6 +10,7 @@
 typedef struct {
 	unsigned int put;
 	unsigned int get;
+	unsigned int size;
 	char buffer[BUF_SIZE]; 
 } RingBuffer;
 
