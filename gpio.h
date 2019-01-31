@@ -83,6 +83,8 @@ typedef struct {
 	uint32_t DR;
 } ADC;
 
+
+
 // TIM2 to TIM5
 // 17.4.1  TIMx control register 1 (TIMx_CR1) . . . . . . . . . . . . . . . . . . . . . .559
 // 17.4.2  TIMx control register 2 (TIMx_CR2) . . . . . . . . . . . . . . . . . . . . . .561
@@ -127,5 +129,15 @@ typedef struct {
     uint32_t OR5;
 } TIMER;
 
+// 25.6.8 USART register map
+typedef struct {
+	uint32_t SR;
+	uint32_t DR;
+	uint32_t BRR;
+	uint32_t CR1;
+	uint32_t CR2;
+	uint32_t CR3;
+	uint32_t GTPR;
+} USART_T;
 
 #endif /* GPIO_H_ */

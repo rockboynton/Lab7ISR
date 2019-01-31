@@ -8,6 +8,10 @@
 #include "gpio.h"
 #include <inttypes.h>
 #include <stdio.h>
+#include "ringbuffer.h"
+
+static volatile USART_T* USART = 0x40004400;
+static volatile RingBuffer buffer = {0, 0, 0};
 
 char usart2_getch(){
 	char c;
@@ -54,5 +58,40 @@ void init_usart2(uint32_t baud, uint32_t sysclk){
 	 //setvbuf(stderr, NULL, _IONBF, 0);
 	 //setvbuf(stdin, NULL, _IONBF, 0);
 	 setvbuf(stdout, NULL, _IONBF, 0);
+}
+
+
+// Some code for Recieving (add to buffer)
+char usart2_getch() {
+	char c;
+	while((USART->SR & (1<<RXNE)) != (1<<RXNE));
+	c = ((char) USART->DR);  // Put data into recieve buffer, recieves data
+	
+	if (c == '\b') {
+		get(&buffer); // trashes last character added to buffer
+	} else {
+		put(&buffer, c); // add to buffer
+		USART->CR1 |= (1<<TXEIE); 
+		usart2_putch(c);  // Echo back
+	}
+
+	if (c == '\r'){  // If character is CR
+		usart2_putch('\n');  // send it
+		c = '\n';   // Return LF. fgets is terminated by LF
+	}
+	return c;
+}
+
+// Some code for Transmitting (removing from buffer)
+void usart2_putch(char c){
+	while(USART->SR & (1<<TXE)) != (1<<TXE));
+	USART->DR = c;
+}
+
+// ISR to handle TXE interrupts
+if (hasElement(&buffer)) { 
+	USART->DR = get(&buffer); // Put data into transmit buffer, sends data
+} else {
+	USART->CR1 &= ~(1<<TXEIE); // Disable TXE interrupts
 }
 
