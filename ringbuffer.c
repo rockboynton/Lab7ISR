@@ -10,34 +10,47 @@
 
 #include "ringbuffer.h";
 
-static volatile RingBuffer sendBuffer = {0,0,BUF_SIZE};
-
 void put(RingBuffer* buffer, char element) {
     while (!hasSpace(buffer)) {
     }
     buffer->buffer[buffer->put] = element;
-    buffer->put++;
     // check if wrap needed
-    if (buffer->put >= buffer->size) {
-        buffer->put = 0; // wrap back to 0
-    }
+    // if (buffer->put >= BUF_SIZE) {
+    //     buffer->put = 0; // wrap back to 0
+    // } else {
+    //     buffer->put++;
+    // }
+    modulo_inc(buffer->put, BUF_SIZE);
+    buffer->used++;
 }
 
 char get(RingBuffer* buffer) {
     while (!hasElement(buffer)) {
     }
     char element = buffer->buffer[buffer->get];
-    if (get >= buffer->size) {
-        buffer->get = 0;
-    }
-    buffer->get++;
+    // if (get >= BUF_SIZE) {
+    //     buffer->get = 0;
+    // } else {
+    //     buffer->get++;
+    // }
+    modulo_inc(buffer->get, BUF_SIZE);
+    buffer->used--;
     return element;
 }
 
-int hasSpace(RingBuffer * buffer) { 
-
+int hasSpace(RingBuffer* buffer) { 
+    return BUF_SIZE != buffer->used;
 }
 
-int hasElement(RingBuffer * buffer) {
+int hasElement(RingBuffer* buffer) {
+    return buffer->used > 0;
+}
 
+unsigned int modulo_inc (const unsigned int value, const unsigned int modulus) {
+    unsigned int my_value = value + 1;
+    if (my_value >= modulus) {
+      my_value  = 0;
+    }
+    return (my_value);
+    // return (value + 1) >= modulus ? 0 : value + 1;
 }

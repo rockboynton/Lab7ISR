@@ -27,7 +27,7 @@
 #define BUFFER_SIZE 30
 
 // Initialize variables to be used 
-char buffer[BUFFER_SIZE+1];
+static volatile RingBuffer sendBuffer = {0, 0, 0};
 
 // File scope helper methods
 static void print_help_screen();

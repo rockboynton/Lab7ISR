@@ -5,12 +5,15 @@
  * asynchronous serial I/O.
  */
 
+#ifndef RINGBUFFER_H_
+#define RINGBUFFER_H_
+
 #define BUF_SIZE 50
 
 typedef struct {
 	unsigned int put;
-	unsigned int get;
-	unsigned int size;
+	unsigned int get; 
+    unsigned int used; // number of elements currently in the buffer 
 	char buffer[BUF_SIZE]; 
 } RingBuffer;
 
@@ -25,3 +28,5 @@ int hasSpace(RingBuffer *);
 
 // Return true (non-zero) if there is at least one element in buffer
 int hasElement(RingBuffer *);
+
+#endif
