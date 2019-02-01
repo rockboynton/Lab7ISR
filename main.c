@@ -27,7 +27,7 @@
 #define BUFFER_SIZE 30
 
 // Initialize variables to be used 
-static volatile RingBuffer sendBuffer = {0, 0, 0};
+static char buffer[BUFFER_SIZE];
 
 // File scope helper methods
 static void print_help_screen();
@@ -57,7 +57,9 @@ int main() {
 	// Never return
 	print_help_screen();
 	while (1) {
-		// TODO add stuff to test functionality 
+		printf("What is your name?\n");
+        scanf("%s", buffer);
+        printf("Your name is %s.\n", buffer);
 	}
 	// Never returns
 	return 0;
