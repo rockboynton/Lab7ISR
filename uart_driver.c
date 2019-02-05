@@ -14,24 +14,6 @@ static volatile USART_T* USART = 0x40004400;
 static volatile RingBuffer sendBuffer = {0, 0, 0};
 static volatile RingBuffer recieveBuffer = {0, 0, 0};
 
-// char usart2_getch(){
-// 	char c;
-// 	while((*(USART_SR)&(1<<RXNE)) != (1<<RXNE));
-// 	c = ((char) *USART_DR);  // Read character from usart
-// 	usart2_putch(c);  // Echo back
-
-// 	if (c == '\r'){  // If character is CR
-// 		usart2_putch('\n');  // send it
-// 		c = '\n';   // Return LF. fgets is terminated by LF
-// 	}
-
-// 	return c;
-// }
-
-// void usart2_putch(char c){
-// 	while((*(USART_SR)&(1<<TXE)) != (1<<TXE));
-// 	*(USART_DR) = c;
-// }
 
 void init_usart2(uint32_t baud, uint32_t sysclk){
 	// Enable clocks for GPIOA and USART2
@@ -45,7 +27,6 @@ void init_usart2(uint32_t baud, uint32_t sysclk){
 	*(GPIOA_MODER) |= (0b1010<<4);  // Both PA3 and PA2 in alt function mode
 
 	*NVIC_ISER_1 |= (1<<6); // Allows interrupt to go through
-
 
 	// Set up USART2
 	//USART2_init();  //8n1 no flow control
@@ -67,14 +48,6 @@ void init_usart2(uint32_t baud, uint32_t sysclk){
 
 // Some code for Recieving (get from recieve buffer)
 char usart2_getch() {
-	// char c;
-	// if (hasElement(&recieveBuffer)) {
-	// 	c = get(&recieveBuffer); // add to buffer
-	// 	usart2_putch(c);  // Echo back
-	// }
-	// if (c == '\b') {
-	// 	// TODO
-	// }
 	return get(&recieveBuffer);
 }
 
@@ -89,9 +62,7 @@ void USART2_IRQHandler(void){
 	// ISR to handle RXNE interrupts
 	if ((USART->SR & (1<<RXNE)) == (1<<RXNE)) {
 		char c = USART->DR; // Put data into transmit buffer, sends data
-		// if (hasSpace(&recieveBuffer)) { 
 		put(&sendBuffer, c);
-		// } 
 		if (c == '\r'){  // If character is CR
 			usart2_putch('\n');  // send it
 			c = '\n';   // Return LF. fgets is terminated by LF
