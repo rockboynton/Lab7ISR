@@ -18,12 +18,12 @@ void put(RingBuffer* buffer, char element) {
     }
     buffer->buffer[buffer->put] = element;
     // check if wrap needed
-    // if (buffer->put >= BUF_SIZE) {
-    //     buffer->put = 0; // wrap back to 0
-    // } else {
-    //     buffer->put++;
-    // }
-    modulo_inc(buffer->put, BUF_SIZE);
+    if (buffer->put >= BUF_SIZE) {
+        buffer->put = 0; // wrap back to 0
+    } else {
+        buffer->put++;
+    }
+    // modulo_inc(buffer->put, BUF_SIZE);
     buffer->used++;
 }
 
@@ -31,12 +31,12 @@ char get(RingBuffer* buffer) {
     while (!hasElement(buffer)) {
     }
     char element = buffer->buffer[buffer->get];
-    // if (get >= BUF_SIZE) {
-    //     buffer->get = 0;
-    // } else {
-    //     buffer->get++;
-    // }
-    modulo_inc(buffer->get, BUF_SIZE);
+    if (buffer->get >= BUF_SIZE) {
+        buffer->get = 0;
+    } else {
+        buffer->get++;
+    }
+    // modulo_inc(buffer->get, BUF_SIZE);
     buffer->used--;
     return element;
 }

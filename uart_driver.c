@@ -53,7 +53,7 @@ void init_usart2(uint32_t baud, uint32_t sysclk){
 	// M = 0..1 start bit, data size is 8, 1 stop bit
 	// PCE= 0..Parity check not enabled
 	// using interrupts
-	*(USART_CR1) = (1<<UE)|(1<<TE)|(1<<RE)|(1<<TXEIE)|(1<<RXNEIE); // Enable UART, Tx and Rx
+	*(USART_CR1) = (1<<UE)|(1<<TE)|(1<<RE)|(1<<RXNEIE); // Enable UART, Tx and Rx
 	*(USART_CR2) = 0;  // This is the default, but do it anyway
 	*(USART_CR3) = 0;  // This is the default, but do it anyway
 	*(USART_BRR) = sysclk/baud;
@@ -67,19 +67,15 @@ void init_usart2(uint32_t baud, uint32_t sysclk){
 
 // Some code for Recieving (get from recieve buffer)
 char usart2_getch() {
-	char c;
-	if (hasElement(&recieveBuffer)) {
-		c = get(&recieveBuffer); // add to buffer
-		usart2_putch(c);  // Echo back
-	}
-	if (c == '\b') {
-		// TODO
-	}
-	if (c == '\r'){  // If character is CR
-		usart2_putch('\n');  // send it
-		c = '\n';   // Return LF. fgets is terminated by LF
-	}
-	return c;
+	// char c;
+	// if (hasElement(&recieveBuffer)) {
+	// 	c = get(&recieveBuffer); // add to buffer
+	// 	usart2_putch(c);  // Echo back
+	// }
+	// if (c == '\b') {
+	// 	// TODO
+	// }
+	return get(&recieveBuffer);
 }
 
 // Some code for Transmitting (put in send buffer)
@@ -92,11 +88,15 @@ void usart2_putch(char c){
 void USART2_IRQHandler(void){
 	// ISR to handle RXNE interrupts
 	if ((USART->SR & (1<<RXNE)) == (1<<RXNE)) {
-		char c;
-		if (hasSpace(&recieveBuffer)) { 
-			c = USART->DR; // Put data into transmit buffer, sends data
-			put(&sendBuffer, c);
-		} 
+		char c = USART->DR; // Put data into transmit buffer, sends data
+		// if (hasSpace(&recieveBuffer)) { 
+		put(&sendBuffer, c);
+		// } 
+		if (c == '\r'){  // If character is CR
+			usart2_putch('\n');  // send it
+			c = '\n';   // Return LF. fgets is terminated by LF
+		}
+		put(&recieveBuffer, c);
 	}
 
 	// ISR to handle TXE interrupts
@@ -108,7 +108,3 @@ void USART2_IRQHandler(void){
 		}
 	}	
 }
-
-
-
-

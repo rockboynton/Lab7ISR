@@ -8,7 +8,7 @@
 #ifndef RINGBUFFER_H_
 #define RINGBUFFER_H_
 
-#define BUF_SIZE 50
+#define BUF_SIZE 15
 
 typedef struct {
 	unsigned int put;
