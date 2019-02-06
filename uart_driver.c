@@ -57,7 +57,6 @@ void usart2_putch(char c){
 	USART->CR1 |= (1<<TXEIE);
 }
 
-
 void USART2_IRQHandler(void){
 	// ISR to handle RXNE interrupts
 	if ((USART->SR & (1<<RXNE)) == (1<<RXNE)) {

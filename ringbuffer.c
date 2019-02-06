@@ -10,9 +10,6 @@
 
 #include "ringbuffer.h";
 
-// Helper method
-static unsigned int modulo_inc (const unsigned int value, const unsigned int modulus);
-
 void put(RingBuffer* buffer, char element) {
     while (!hasSpace(buffer)) {
     }
@@ -47,13 +44,4 @@ int hasSpace(RingBuffer* buffer) {
 
 int hasElement(RingBuffer* buffer) {
     return buffer->used > 0;
-}
-
-static unsigned int modulo_inc (const unsigned int value, const unsigned int modulus) {
-    unsigned int my_value = value + 1;
-    if (my_value >= modulus) {
-      my_value  = 0;
-    }
-    return (my_value);
-    // return (value + 1) >= modulus ? 0 : value + 1; // ? Easier to read?
 }

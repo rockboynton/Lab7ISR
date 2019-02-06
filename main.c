@@ -1,9 +1,7 @@
 /*
  * main.c
  *
- * Plays a song using piezo speaker on MSOE dev board.
- * 
- * The following menu options are implemented:
+ * Tests the functionality of UART with interrupts
  * 				
  */
 #include <stdio.h>
@@ -20,7 +18,6 @@
 #define F_CPU 16000000UL
 
 // 0 = main program
-// 1 = Ring Buffer tests
 #define DEBUG 0
 
 // User input buffer
@@ -28,10 +25,6 @@
 
 // Initialize variables to be used 
 static char buffer[BUFFER_SIZE];
-
-// File scope helper methods
-static void print_help_screen();
-
 
 // main
 int main() {
@@ -44,18 +37,8 @@ int main() {
 	temp_init();
 	speaker_init();
 
-	// --------------------- RING BUFFER TEST CODE -------------------
-	if (DEBUG == 5) {
-		char entry[20];
-		while (1) {
-			// TODO add tests 
-		}
-	}
-	//-----------------------------------------------------------
-
 	// Main program 
 	// Never return
-	print_help_screen();
 	while (1) {
 		printf("What is your name?\n");
         scanf("%s", buffer);
@@ -63,11 +46,6 @@ int main() {
 	}
 	// Never returns
 	return 0;
-}
-
-// No help screen neccasary
-static void print_help_screen() { 
-	printf("");
 }
 
 
